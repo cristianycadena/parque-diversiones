@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdventuraMax — Parque de Diversiones</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B2B;
+  --primary-dark: #E55520;
+  --secondary: #FFD700;
+  --accent: #7C3AED;
+  --accent2: #06B6D4;
+  --dark: #1A1A2E;
+  --dark2: #16213E;
+  --card-bg: #ffffff;
+  --text: #1A1A2E;
+  --text-muted: #6B7280;
+  --success: #10B981;
+  --danger: #EF4444;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+  --nav-height: 70px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+/* ======= NAV ======= */
+nav {
+  position:fixed; top:0; width:100%; z-index:1000;
+  background:rgba(26,26,46,0.97); backdrop-filter:blur(12px);
+  height:var(--nav-height); display:flex; align-items:center; justify-content:space-between;
+  padding:0 2rem; box-shadow:0 4px 24px rgba(0,0,0,0.25);
+}
+.nav-logo { font-family:'Fredoka One',cursive; font-size:1.8rem; color:var(--primary); letter-spacing:1px; cursor:pointer; }
+.nav-logo span { color:var(--secondary); }
+.nav-links { display:flex; gap:0.5rem; align-items:center; }
+.nav-links button {
+  background:none; border:none; color:#fff; font-family:'Nunito',sans-serif;
+  font-size:0.95rem; font-weight:700; cursor:pointer; padding:0.5rem 1rem;
+  border-radius:8px; transition:all 0.2s;
+}
+.nav-links button:hover { background:rgba(255,107,43,0.2); color:var(--primary); }
+.nav-links .btn-nav-buy {
+  background:var(--primary); color:#fff !important; border-radius:24px;
+  padding:0.5rem 1.4rem;
+}
+.nav-links .btn-nav-buy:hover { background:var(--primary-dark); transform:scale(1.04); }
+.cart-badge { position:relative; }
+.cart-count {
+  position:absolute; top:-6px; right:-6px;
+  background:var(--secondary); color:var(--dark); font-size:0.7rem;
+  font-weight:900; border-radius:50%; width:18px; height:18px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ======= PAGES ======= */
+.page { display:none; min-height:100vh; padding-top:var(--nav-height); }
+.page.active { display:block; }
+
+/* ======= HOME ======= */
+.hero {
+  background:linear-gradient(135deg, #1A1A2E 0%, #16213E 40%, #0F3460 100%);
+  position:relative; overflow:hidden; padding:5rem 2rem 4rem;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:calc(100vh - var(--nav-height)); text-align:center;
+}
+.hero-stars { position:absolute; top:0;left:0;right:0;bottom:0; overflow:hidden; pointer-events:none; }
+.star { position:absolute; background:#fff; border-radius:50%; animation:twinkle 3s infinite alternate; }
+@keyframes twinkle { from{opacity:0.2;} to{opacity:1;} }
+.hero-badge {
+  background:rgba(255,215,0,0.15); border:1.5px solid var(--secondary);
+  color:var(--secondary); font-size:0.85rem; font-weight:800;
+  padding:0.35rem 1.2rem; border-radius:24px; margin-bottom:1.5rem;
+  letter-spacing:1px; text-transform:uppercase;
+}
+.hero h1 {
+  font-family:'Fredoka One',cursive; font-size:clamp(2.8rem,7vw,5.5rem);
+  color:#fff; line-height:1.1; margin-bottom:1rem;
+}
+.hero h1 span { color:var(--primary); }
+.hero p { color:rgba(255,255,255,0.75); font-size:1.15rem; max-width:550px; margin:0 auto 2rem; font-weight:600; }
+.hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+.btn-hero {
+  padding:0.9rem 2.2rem; border-radius:50px; font-family:'Nunito',sans-serif;
+  font-weight:800; font-size:1rem; cursor:pointer; border:none; transition:all 0.25s;
+}
+.btn-hero-primary { background:var(--primary); color:#fff; }
+.btn-hero-primary:hover { background:var(--primary-dark); transform:translateY(-3px); box-shadow:0 8px 24px rgba(255,107,43,0.45); }
+.btn-hero-secondary { background:rgba(255,255,255,0.12); color:#fff; border:2px solid rgba(255,255,255,0.4); }
+.btn-hero-secondary:hover { background:rgba(255,255,255,0.22); transform:translateY(-3px); }
+
+.park-stats {
+  display:flex; gap:2rem; margin-top:3rem; flex-wrap:wrap; justify-content:center;
+}
+.stat-item { text-align:center; }
+.stat-num { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--secondary); }
+.stat-label { font-size:0.8rem; color:rgba(255,255,255,0.6); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+
+/* ATRACCIONES */
+.section { padding:4rem 2rem; max-width:1200px; margin:0 auto; }
+.section-title {
+  font-family:'Fredoka One',cursive; font-size:2.2rem; color:var(--dark);
+  margin-bottom:0.5rem; text-align:center;
+}
+.section-subtitle { color:var(--text-muted); text-align:center; margin-bottom:2.5rem; font-size:1rem; font-weight:600; }
+.attractions-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.5rem; }
+.attraction-card {
+  background:var(--card-bg); border-radius:20px; overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,0.08); transition:transform 0.3s, box-shadow 0.3s;
+  cursor:pointer;
+}
+.attraction-card:hover { transform:translateY(-6px); box-shadow:0 12px 36px rgba(0,0,0,0.15); }
+.attraction-img {
+  height:160px; display:flex; align-items:center; justify-content:center;
+  font-size:4rem; position:relative; overflow:hidden;
+}
+.attraction-info { padding:1.2rem; }
+.attraction-info h3 { font-size:1.1rem; font-weight:800; margin-bottom:0.3rem; }
+.attraction-info p { font-size:0.85rem; color:var(--text-muted); font-weight:600; }
+.attraction-tag {
+  display:inline-block; padding:0.2rem 0.7rem; border-radius:20px;
+  font-size:0.75rem; font-weight:800; margin-top:0.5rem;
+}
+.tag-extreme { background:#FEE2E2; color:#DC2626; }
+.tag-family { background:#D1FAE5; color:#065F46; }
+.tag-kids { background:#FEF3C7; color:#92400E; }
+.tag-thrill { background:#EDE9FE; color:#5B21B6; }
+
+/* ======= CATALOG ======= */
+.catalog-header {
+  background:linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+  padding:3rem 2rem; text-align:center; color:#fff;
+}
+.catalog-header h2 { font-family:'Fredoka One',cursive; font-size:2.5rem; color:var(--secondary); margin-bottom:0.5rem; }
+.catalog-header p { color:rgba(255,255,255,0.7); font-weight:600; }
+.catalog-filters {
+  display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center;
+  padding:1.5rem 2rem; max-width:1200px; margin:0 auto;
+}
+.filter-btn {
+  padding:0.5rem 1.2rem; border-radius:24px; border:2px solid var(--border);
+  background:#fff; font-family:'Nunito',sans-serif; font-weight:700;
+  font-size:0.9rem; cursor:pointer; transition:all 0.2s; color:var(--text);
+}
+.filter-btn.active, .filter-btn:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+.tickets-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; padding:1rem 2rem 3rem; max-width:1200px; margin:0 auto; }
+.ticket-card {
+  background:var(--card-bg); border-radius:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+  overflow:hidden; transition:transform 0.3s, box-shadow 0.3s;
+  position:relative;
+}
+.ticket-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.14); }
+.ticket-card.featured { border:2.5px solid var(--primary); }
+.ticket-featured-badge {
+  position:absolute; top:12px; right:12px;
+  background:var(--primary); color:#fff; font-size:0.72rem; font-weight:900;
+  padding:0.25rem 0.7rem; border-radius:20px; text-transform:uppercase; letter-spacing:1px;
+}
+.ticket-header { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); }
+.ticket-icon { font-size:2.5rem; margin-bottom:0.75rem; }
+.ticket-name { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--dark); }
+.ticket-type-label { font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; }
+.ticket-body { padding:1.2rem 1.5rem; }
+.ticket-price { margin-bottom:1rem; }
+.ticket-price .price-amount { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--primary); }
+.ticket-price .price-per { font-size:0.85rem; color:var(--text-muted); font-weight:600; }
+.ticket-features { list-style:none; margin-bottom:1.2rem; }
+.ticket-features li { font-size:0.9rem; font-weight:600; color:var(--text-muted); padding:0.25rem 0; }
+.ticket-features li::before { content:"✓ "; color:var(--success); font-weight:900; }
+.btn-add-cart {
+  width:100%; padding:0.85rem; border-radius:12px; border:none;
+  background:var(--primary); color:#fff; font-family:'Nunito',sans-serif;
+  font-weight:800; font-size:1rem; cursor:pointer; transition:all 0.2s;
+}
+.btn-add-cart:hover { background:var(--primary-dark); transform:scale(1.02); }
+
+/* ======= CART ======= */
+.cart-container { max-width:900px; margin:0 auto; padding:2rem; }
+.cart-header-section { margin-bottom:2rem; }
+.cart-header-section h2 { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--dark); }
+.cart-empty { text-align:center; padding:4rem 2rem; color:var(--text-muted); }
+.cart-empty .empty-icon { font-size:4rem; margin-bottom:1rem; }
+.cart-items-list { display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem; }
+.cart-item {
+  background:var(--card-bg); border-radius:16px; padding:1.2rem 1.5rem;
+  box-shadow:0 2px 12px rgba(0,0,0,0.07); display:flex; align-items:center; gap:1rem;
+}
+.cart-item-icon { font-size:2rem; }
+.cart-item-info { flex:1; }
+.cart-item-name { font-weight:800; font-size:1rem; }
+.cart-item-type { font-size:0.82rem; color:var(--text-muted); font-weight:600; }
+.cart-item-qty {
+  display:flex; align-items:center; gap:0.5rem;
+}
+.qty-btn {
+  width:30px; height:30px; border-radius:50%; border:2px solid var(--border);
+  background:#fff; font-size:1.1rem; font-weight:900; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+}
+.qty-btn:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+.qty-num { font-weight:800; font-size:1rem; min-width:24px; text-align:center; }
+.cart-item-price { font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--primary); }
+.cart-item-remove { background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem; padding:0.3rem; border-radius:8px; transition:background 0.2s; }
+.cart-item-remove:hover { background:#FEE2E2; }
+.cart-coupon { background:var(--card-bg); border-radius:16px; padding:1.2rem 1.5rem; box-shadow:0 2px 12px rgba(0,0,0,0.07); margin-bottom:1rem; }
+.cart-coupon h4 { font-weight:800; margin-bottom:0.75rem; }
+.coupon-input-group { display:flex; gap:0.75rem; }
+.coupon-input-group input { flex:1; padding:0.65rem 1rem; border-radius:10px; border:2px solid var(--border); font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:700; }
+.coupon-input-group button { padding:0.65rem 1.2rem; border-radius:10px; border:none; background:var(--accent); color:#fff; font-family:'Nunito',sans-serif; font-weight:800; cursor:pointer; transition:background 0.2s; }
+.coupon-input-group button:hover { background:#6D28D9; }
+.coupon-msg { font-size:0.85rem; font-weight:700; margin-top:0.5rem; }
+.cart-summary { background:var(--card-bg); border-radius:16px; padding:1.5rem; box-shadow:0 2px 12px rgba(0,0,0,0.07); }
+.summary-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; font-weight:700; font-size:0.95rem; }
+.summary-row.total { font-size:1.2rem; font-weight:900; border-top:2px solid var(--border); padding-top:1rem; margin-top:0.5rem; color:var(--primary); }
+.btn-checkout { width:100%; padding:1rem; border-radius:14px; border:none; background:var(--primary); color:#fff; font-family:'Nunito',sans-serif; font-weight:900; font-size:1.1rem; cursor:pointer; margin-top:1rem; transition:all 0.2s; }
+.btn-checkout:hover { background:var(--primary-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,107,43,0.4); }
+
+/* ======= AUTH ======= */
+.auth-container { min-height:calc(100vh - var(--nav-height)); display:flex; align-items:center; justify-content:center; padding:2rem; background:linear-gradient(135deg, #1A1A2E 0%, #16213E 60%, #0F3460 100%); }
+.auth-box { background:#fff; border-radius:24px; padding:2.5rem; max-width:440px; width:100%; box-shadow:0 24px 64px rgba(0,0,0,0.3); }
+.auth-logo { text-align:center; margin-bottom:1.5rem; }
+.auth-logo h2 { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--primary); }
+.auth-logo p { color:var(--text-muted); font-weight:600; font-size:0.9rem; }
+.auth-tabs { display:flex; background:#F3F4F6; border-radius:12px; padding:4px; margin-bottom:1.5rem; }
+.auth-tab { flex:1; padding:0.6rem; border:none; background:none; border-radius:10px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; color:var(--text-muted); transition:all 0.2s; }
+.auth-tab.active { background:#fff; color:var(--primary); box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.auth-form { display:none; }
+.auth-form.active { display:block; }
+.form-group { margin-bottom:1.1rem; }
+.form-label { display:block; font-weight:800; font-size:0.85rem; margin-bottom:0.4rem; color:var(--dark); }
+.form-input {
+  width:100%; padding:0.75rem 1rem; border:2px solid var(--border); border-radius:12px;
+  font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:600; transition:border 0.2s;
+}
+.form-input:focus { outline:none; border-color:var(--primary); }
+.btn-auth {
+  width:100%; padding:0.9rem; border:none; border-radius:12px;
+  background:var(--primary); color:#fff; font-family:'Nunito',sans-serif;
+  font-weight:900; font-size:1rem; cursor:pointer; margin-top:0.5rem; transition:all 0.2s;
+}
+.btn-auth:hover { background:var(--primary-dark); transform:translateY(-2px); }
+.auth-hint { font-size:0.8rem; color:var(--text-muted); text-align:center; margin-top:1rem; font-weight:600; }
+
+/* ======= PAYMENT ======= */
+.payment-container { max-width:760px; margin:0 auto; padding:2rem; }
+.payment-container h2 { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--dark); margin-bottom:1.5rem; }
+.payment-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+@media(max-width:640px){ .payment-grid { grid-template-columns:1fr; } }
+.payment-section { background:var(--card-bg); border-radius:20px; padding:1.5rem; box-shadow:0 4px 16px rgba(0,0,0,0.08); }
+.payment-section h3 { font-weight:800; font-size:1rem; margin-bottom:1rem; color:var(--dark); }
+.payment-method { display:flex; align-items:center; gap:0.75rem; padding:0.9rem; border:2px solid var(--border); border-radius:12px; cursor:pointer; margin-bottom:0.75rem; transition:all 0.2s; }
+.payment-method:hover, .payment-method.selected { border-color:var(--primary); background:#FFF7F4; }
+.payment-method input[type=radio] { accent-color:var(--primary); }
+.payment-method label { font-weight:800; font-size:0.95rem; cursor:pointer; }
+.card-fields { display:none; }
+.card-fields.active { display:block; }
+.order-summary-list { list-style:none; }
+.order-summary-list li { display:flex; justify-content:space-between; padding:0.5rem 0; font-weight:700; font-size:0.9rem; border-bottom:1px solid var(--border); }
+.order-total { display:flex; justify-content:space-between; padding:0.75rem 0 0; font-weight:900; font-size:1.1rem; color:var(--primary); }
+.btn-pay { width:100%; padding:1rem; border:none; border-radius:14px; background:var(--success); color:#fff; font-family:'Nunito',sans-serif; font-weight:900; font-size:1.1rem; cursor:pointer; margin-top:1rem; transition:all 0.2s; }
+.btn-pay:hover { background:#059669; transform:translateY(-2px); box-shadow:0 8px 24px rgba(16,185,129,0.4); }
+
+/* ======= CONFIRMATION ======= */
+.confirmation-container { max-width:600px; margin:0 auto; padding:3rem 2rem; text-align:center; }
+.confirm-icon { font-size:5rem; margin-bottom:1rem; animation:pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes pop { from{transform:scale(0);} to{transform:scale(1);} }
+.confirm-title { font-family:'Fredoka One',cursive; font-size:2.2rem; color:var(--success); margin-bottom:0.75rem; }
+.confirm-subtitle { color:var(--text-muted); font-weight:600; font-size:1rem; margin-bottom:2rem; }
+.confirm-order-box { background:var(--card-bg); border-radius:20px; padding:1.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.08); text-align:left; margin-bottom:2rem; }
+.confirm-order-box h4 { font-weight:900; margin-bottom:1rem; color:var(--dark); }
+.confirm-detail { display:flex; justify-content:space-between; font-weight:700; font-size:0.9rem; padding:0.4rem 0; border-bottom:1px solid var(--border); }
+.confirm-detail:last-child { border:none; }
+.confirm-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.btn-confirm { padding:0.8rem 1.8rem; border-radius:12px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; transition:all 0.2s; border:none; }
+.btn-confirm-primary { background:var(--primary); color:#fff; }
+.btn-confirm-secondary { background:#fff; color:var(--dark); border:2px solid var(--border); }
+
+/* ======= MY ORDERS ======= */
+.orders-container { max-width:800px; margin:0 auto; padding:2rem; }
+.orders-container h2 { font-family:'Fredoka One',cursive; font-size:2rem; margin-bottom:1.5rem; }
+.order-card { background:var(--card-bg); border-radius:16px; padding:1.5rem; box-shadow:0 2px 12px rgba(0,0,0,0.07); margin-bottom:1rem; }
+.order-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
+.order-id { font-weight:900; font-size:1rem; }
+.order-status { padding:0.25rem 0.8rem; border-radius:20px; font-size:0.78rem; font-weight:900; text-transform:uppercase; letter-spacing:1px; }
+.status-completado { background:#D1FAE5; color:#065F46; }
+.status-pendiente { background:#FEF3C7; color:#92400E; }
+.order-items-list { font-size:0.88rem; font-weight:600; color:var(--text-muted); margin-bottom:0.75rem; }
+.order-footer { display:flex; justify-content:space-between; align-items:center; }
+.order-total-amount { font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--primary); }
+.btn-view-ticket { padding:0.4rem 1rem; border-radius:10px; border:2px solid var(--primary); background:#fff; color:var(--primary); font-family:'Nunito',sans-serif; font-weight:800; font-size:0.85rem; cursor:pointer; transition:all 0.2s; }
+.btn-view-ticket:hover { background:var(--primary); color:#fff; }
+
+/* ======= ADMIN ======= */
+.admin-container { max-width:1200px; margin:0 auto; padding:2rem; }
+.admin-topbar { background:var(--dark); color:#fff; padding:1rem 2rem; margin:0 -2rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+.admin-topbar h2 { font-family:'Fredoka One',cursive; font-size:1.5rem; color:var(--secondary); }
+.admin-badge { background:var(--primary); color:#fff; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.8rem; font-weight:800; }
+.admin-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:2rem; }
+.admin-stat { background:var(--card-bg); border-radius:16px; padding:1.2rem; box-shadow:0 2px 12px rgba(0,0,0,0.07); border-left:4px solid var(--primary); }
+.admin-stat-val { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--primary); }
+.admin-stat-label { font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; }
+.admin-tabs { display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.admin-tab-btn { padding:0.6rem 1.2rem; border-radius:24px; border:2px solid var(--border); background:#fff; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+.admin-tab-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+.admin-section { display:none; }
+.admin-section.active { display:block; }
+.admin-table-wrapper { background:var(--card-bg); border-radius:16px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.07); overflow-x:auto; }
+.admin-table { width:100%; border-collapse:collapse; font-size:0.9rem; }
+.admin-table th { background:var(--dark); color:#fff; padding:0.9rem 1rem; text-align:left; font-weight:800; font-size:0.82rem; text-transform:uppercase; letter-spacing:1px; }
+.admin-table td { padding:0.85rem 1rem; border-bottom:1px solid var(--border); font-weight:600; }
+.admin-table tr:hover td { background:#FFF7F4; }
+.admin-action-btn { padding:0.3rem 0.8rem; border-radius:8px; border:none; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.78rem; cursor:pointer; transition:all 0.2s; margin:0 0.15rem; }
+.btn-edit { background:#EDE9FE; color:#5B21B6; }
+.btn-edit:hover { background:#DDD6FE; }
+.btn-delete { background:#FEE2E2; color:#DC2626; }
+.btn-delete:hover { background:#FECACA; }
+.admin-add-form { background:var(--card-bg); border-radius:16px; padding:1.5rem; box-shadow:0 2px 12px rgba(0,0,0,0.07); margin-bottom:1.5rem; }
+.admin-add-form h3 { font-weight:800; margin-bottom:1rem; font-size:1rem; }
+.admin-form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; }
+.btn-admin-add { padding:0.7rem 1.5rem; border:none; border-radius:10px; background:var(--success); color:#fff; font-family:'Nunito',sans-serif; font-weight:800; cursor:pointer; margin-top:0.75rem; transition:background 0.2s; }
+.btn-admin-add:hover { background:#059669; }
+
+/* ======= TOAST ======= */
+.toast {
+  position:fixed; bottom:2rem; right:2rem; z-index:9999;
+  background:var(--dark); color:#fff; padding:1rem 1.5rem;
+  border-radius:14px; font-weight:700; font-size:0.9rem;
+  box-shadow:0 8px 24px rgba(0,0,0,0.25); transform:translateX(120%);
+  transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  display:flex; align-items:center; gap:0.75rem; max-width:320px;
+}
+.toast.show { transform:translateX(0); }
+.toast-icon { font-size:1.3rem; }
+
+/* ======= MODAL ======= */
+.modal-overlay { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.6); z-index:5000; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:#fff; border-radius:24px; padding:2rem; max-width:500px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 64px rgba(0,0,0,0.3); }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
+.modal-title { font-family:'Fredoka One',cursive; font-size:1.5rem; color:var(--dark); }
+.modal-close { background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted); transition:color 0.2s; }
+.modal-close:hover { color:var(--dark); }
+
+/* ======= FOOTER ======= */
+footer { background:var(--dark); color:rgba(255,255,255,0.7); text-align:center; padding:2rem; font-size:0.85rem; font-weight:600; }
+footer span { color:var(--primary); }
+
+/* ======= RESPONSIVE ======= */
+@media(max-width:768px){
+  .nav-links button:not(.btn-nav-buy):not(.cart-badge) { display:none; }
+  .hero h1 { font-size:2.5rem; }
+  .park-stats { gap:1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">🎉</span><span id="toastMsg">¡Agregado al carrito!</span></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">Aventura<span>Max</span> 🎢</div>
+  <div class="nav-links">
+    <button onclick="showPage('home')">Inicio</button>
+    <button onclick="showPage('catalog')">Boletos</button>
+    <button onclick="showPage('orders')" id="ordersNavBtn" style="display:none">Mis Compras</button>
+    <button onclick="showPage('admin')" id="adminNavBtn" style="display:none">⚙️ Admin</button>
+    <button onclick="handleAuthNav()" id="authNavBtn">Iniciar Sesión</button>
+    <button onclick="showPage('cart')" class="btn-nav-buy cart-badge">
+      🛒 Carrito <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== PAGE: HOME ===== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-stars" id="heroStars"></div>
+    <div class="hero-badge">🏆 El parque #1 de México</div>
+    <h1>¡La aventura<br>te espera <span>aquí</span>!</h1>
+    <p>Más de 30 atracciones emocionantes para toda la familia. ¡Compra tus boletos en línea con descuento especial!</p>
+    <div class="hero-btns">
+      <button class="btn-hero btn-hero-primary" onclick="showPage('catalog')">🎟️ Ver Boletos</button>
+      <button class="btn-hero btn-hero-secondary" onclick="document.getElementById('attractions-section').scrollIntoView({behavior:'smooth'})">🎡 Ver Atracciones</button>
+    </div>
+    <div class="park-stats">
+      <div class="stat-item"><div class="stat-num">30+</div><div class="stat-label">Atracciones</div></div>
+      <div class="stat-item"><div class="stat-num">500k+</div><div class="stat-label">Visitantes/año</div></div>
+      <div class="stat-item"><div class="stat-num">15</div><div class="stat-label">Años de diversión</div></div>
+      <div class="stat-item"><div class="stat-num">4.9⭐</div><div class="stat-label">Calificación</div></div>
+    </div>
+  </section>
+
+  <div class="section" id="attractions-section">
+    <h2 class="section-title">🎠 Atracciones Destacadas</h2>
+    <p class="section-subtitle">Descubre la emoción en cada rincón del parque</p>
+    <div class="attractions-grid">
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#FF6B2B,#FF8C42)">🎢</div>
+        <div class="attraction-info">
+          <h3>Montaña Rusa Extrema</h3>
+          <p>La atracción más veloz del parque. ¡Alcanza 120 km/h!</p>
+          <span class="attraction-tag tag-extreme">Extrema</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">🎡</div>
+        <div class="attraction-info">
+          <h3>Torre del Terror</h3>
+          <p>Caída libre desde 80 metros de altura. ¡Solo para valientes!</p>
+          <span class="attraction-tag tag-thrill">Adrenalina</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#06B6D4,#0891B2)">🌊</div>
+        <div class="attraction-info">
+          <h3>Río Salvaje</h3>
+          <p>Rafting en rápidos con salpicones garantizados para todos.</p>
+          <span class="attraction-tag tag-family">Familiar</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#F59E0B,#FBBF24)">🎪</div>
+        <div class="attraction-info">
+          <h3>Carrusel Mágico</h3>
+          <p>El clásico encantador para los más pequeños. ¡Lleno de magia!</p>
+          <span class="attraction-tag tag-kids">Infantil</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#10B981,#059669)">🦁</div>
+        <div class="attraction-info">
+          <h3>Safari Virtual</h3>
+          <p>Recorrido 4D con animales exóticos en realidad aumentada.</p>
+          <span class="attraction-tag tag-family">Familiar</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#EF4444,#DC2626)">🚀</div>
+        <div class="attraction-info">
+          <h3>Cohete Espacial</h3>
+          <p>Simulador de viaje espacial con tecnología de punta.</p>
+          <span class="attraction-tag tag-thrill">Adrenalina</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)">🎭</div>
+        <div class="attraction-info">
+          <h3>Teatro del Parque</h3>
+          <p>Shows en vivo con personajes animados. 4 funciones al día.</p>
+          <span class="attraction-tag tag-kids">Infantil</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <div class="attraction-img" style="background:linear-gradient(135deg,#0F3460,#1A1A2E)">🌉</div>
+        <div class="attraction-info">
+          <h3>Puente Colgante</h3>
+          <p>Cruce sobre un abismo a 40 metros. ¡Tiembla si te atreves!</p>
+          <span class="attraction-tag tag-extreme">Extrema</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark)); padding:4rem 2rem; text-align:center; color:#fff;">
+    <h2 style="font-family:'Fredoka One',cursive;font-size:2.2rem;margin-bottom:1rem;">🎟️ ¡Compra en línea y ahorra hasta 30%!</h2>
+    <p style="font-size:1rem;opacity:0.9;font-weight:600;margin-bottom:1.5rem;max-width:500px;margin-left:auto;margin-right:auto;">Descuentos exclusivos para boletos comprados en línea. Evita filas y asegura tu entrada.</p>
+    <button class="btn-hero btn-hero-secondary" onclick="showPage('catalog')" style="font-size:1.05rem;padding:1rem 2.5rem;">Ver Boletos y Precios →</button>
+  </div>
+  <footer><p>© 2026 <span>AdventuraMax</span> — El parque de diversiones #1 de México 🎢</p></footer>
+</div>
+
+<!-- ===== PAGE: CATALOG ===== -->
+<div class="page" id="page-catalog">
+  <div class="catalog-header">
+    <h2>🎟️ Boletos & Pases</h2>
+    <p>Elige el pase perfecto para tu visita al parque</p>
+  </div>
+  <div class="catalog-filters">
+    <button class="filter-btn active" onclick="filterTickets('all',this)">Todos</button>
+    <button class="filter-btn" onclick="filterTickets('individual',this)">Individual</button>
+    <button class="filter-btn" onclick="filterTickets('familiar',this)">Familiar</button>
+    <button class="filter-btn" onclick="filterTickets('vip',this)">VIP</button>
+    <button class="filter-btn" onclick="filterTickets('anual',this)">Anual</button>
+  </div>
+  <div class="tickets-grid" id="ticketsGrid"></div>
+</div>
+
+<!-- ===== PAGE: CART ===== -->
+<div class="page" id="page-cart">
+  <div class="cart-container">
+    <div class="cart-header-section">
+      <h2>🛒 Tu Carrito</h2>
+    </div>
+    <div id="cartContent"></div>
+  </div>
+</div>
+
+<!-- ===== PAGE: AUTH ===== -->
+<div class="page" id="page-auth">
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <h2>🎢 AdventuraMax</h2>
+        <p>Accede a tu cuenta para comprar boletos</p>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')">Registrarse</button>
+      </div>
+      <div class="auth-form active" id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="tucorreo@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input class="form-input" type="password" id="loginPass" placeholder="••••••••">
+        </div>
+        <button class="btn-auth" onclick="doLogin()">Iniciar Sesión</button>
+        <p class="auth-hint">¿Olvidaste tu contraseña? <a href="#" style="color:var(--primary);">Recuperar</a></p>
+        <p class="auth-hint" style="margin-top:0.5rem;font-size:0.75rem;background:#FFF7F4;padding:0.5rem;border-radius:8px;">
+          🔑 Admin demo: <b>admin@parque.com</b> / <b>admin123</b><br>
+          👤 Usuario: <b>usuario@test.com</b> / <b>test123</b>
+        </p>
+      </div>
+      <div class="auth-form" id="registerForm">
+        <div class="form-group">
+          <label class="form-label">Nombre completo</label>
+          <input class="form-input" type="text" id="regName" placeholder="Tu nombre completo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="tucorreo@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input class="form-input" type="password" id="regPass" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmar contraseña</label>
+          <input class="form-input" type="password" id="regPass2" placeholder="Repite tu contraseña">
+        </div>
+        <button class="btn-auth" onclick="doRegister()">Crear Cuenta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: PAYMENT ===== -->
+<div class="page" id="page-payment">
+  <div class="payment-container">
+    <h2>💳 Realizar Pago</h2>
+    <div class="payment-grid">
+      <div class="payment-section">
+        <h3>Método de Pago</h3>
+        <div class="payment-method selected" id="pm-card" onclick="selectPayMethod('card')">
+          <input type="radio" name="paymethod" checked>
+          <label>💳 Tarjeta de Crédito/Débito</label>
+        </div>
+        <div class="card-fields active" id="cardFields">
+          <div class="form-group"><label class="form-label">Número de tarjeta</label><input class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" id="cardNum" oninput="formatCard(this)"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <div class="form-group"><label class="form-label">MM/AA</label><input class="form-input" placeholder="12/28" maxlength="5" id="cardExp"></div>
+            <div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="123" maxlength="3" id="cardCVV"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Nombre en tarjeta</label><input class="form-input" placeholder="NOMBRE APELLIDO" id="cardName" style="text-transform:uppercase"></div>
+        </div>
+        <div class="payment-method" id="pm-paypal" onclick="selectPayMethod('paypal')">
+          <input type="radio" name="paymethod">
+          <label>🅿️ PayPal</label>
+        </div>
+        <div class="payment-method" id="pm-transfer" onclick="selectPayMethod('transfer')">
+          <input type="radio" name="paymethod">
+          <label>🏦 Transferencia Bancaria</label>
+        </div>
+      </div>
+      <div class="payment-section">
+        <h3>Resumen de Orden</h3>
+        <ul class="order-summary-list" id="paymentSummary"></ul>
+        <div class="order-total"><span>Total a pagar</span><span id="paymentTotal">$0.00</span></div>
+        <button class="btn-pay" onclick="processPayment()">✅ Pagar ahora</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: CONFIRMATION ===== -->
+<div class="page" id="page-confirmation">
+  <div class="confirmation-container">
+    <div class="confirm-icon">🎉</div>
+    <h2 class="confirm-title">¡Compra Realizada con Éxito!</h2>
+    <p class="confirm-subtitle">Tu pago ha sido aprobado. Hemos enviado tus boletos a tu correo electrónico.</p>
+    <div class="confirm-order-box" id="confirmDetails"></div>
+    <div class="confirm-btns">
+      <button class="btn-confirm btn-confirm-primary" onclick="showPage('orders')">📋 Ver mis compras</button>
+      <button class="btn-confirm btn-confirm-secondary" onclick="showPage('home')">🏠 Volver al inicio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: MY ORDERS ===== -->
+<div class="page" id="page-orders">
+  <div class="orders-container">
+    <h2>📋 Mis Compras</h2>
+    <div id="ordersList"></div>
+  </div>
+</div>
+
+<!-- ===== PAGE: ADMIN ===== -->
+<div class="page" id="page-admin">
+  <div class="admin-container">
+    <div class="admin-topbar">
+      <h2>⚙️ Panel de Administración</h2>
+      <span class="admin-badge">Admin</span>
+    </div>
+    <div class="admin-stats" id="adminStats"></div>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('tickets')">🎟️ Gestionar Boletos</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('users')">👥 Usuarios</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('orders-admin')">📊 Ventas</button>
+    </div>
+    <!-- Tickets Admin -->
+    <div class="admin-section active" id="admin-tickets">
+      <div class="admin-add-form">
+        <h3>➕ Agregar Nuevo Boleto</h3>
+        <div class="admin-form-grid">
+          <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="newTicketName" placeholder="Ej: Pase Individual"></div>
+          <div class="form-group"><label class="form-label">Precio ($)</label><input class="form-input" type="number" id="newTicketPrice" placeholder="350"></div>
+          <div class="form-group"><label class="form-label">Tipo</label>
+            <select class="form-input" id="newTicketType">
+              <option value="individual">Individual</option>
+              <option value="familiar">Familiar</option>
+              <option value="vip">VIP</option>
+              <option value="anual">Anual</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="newTicketDesc" placeholder="Acceso a todas las atracciones"></div>
+          <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="newTicketEmoji" placeholder="🎟️" maxlength="4"></div>
+          <div class="form-group"><label class="form-label">Stock</label><input class="form-input" type="number" id="newTicketStock" placeholder="100"></div>
+        </div>
+        <button class="btn-admin-add" onclick="addTicket()">➕ Agregar Boleto</button>
+      </div>
+      <div class="admin-table-wrapper">
+        <table class="admin-table" id="adminTicketsTable">
+          <thead><tr><th>ID</th><th>Emoji</th><th>Nombre</th><th>Tipo</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
+          <tbody id="adminTicketsTbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Users Admin -->
+    <div class="admin-section" id="admin-users">
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Compras</th><th>Acciones</th></tr></thead>
+          <tbody id="adminUsersTbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Orders Admin -->
+    <div class="admin-section" id="admin-orders-admin">
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+          <thead><tr><th>Orden #</th><th>Usuario</th><th>Items</th><th>Total</th><th>Método</th><th>Estado</th></tr></thead>
+          <tbody id="adminOrdersTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL boleto/ticket viewer -->
+<div class="modal-overlay" id="ticketModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">🎟️ Mi Boleto</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+// ============ STATE ============
+var tickets = [
+  {id:1,name:"Pase Individual",type:"individual",price:350,emoji:"🎟️",desc:"Acceso a todas las atracciones por un día",features:["Todas las atracciones","Válido 1 día","Sin restricciones de edad"],stock:150,featured:false},
+  {id:2,name:"Pase Familiar",type:"familiar",price:900,emoji:"👨‍👩‍👧‍👦",desc:"Entrada para 4 personas (2 adultos + 2 menores)",features:["4 personas","Acceso completo","Descuento en food court","Foto familiar gratis"],stock:80,featured:true},
+  {id:3,name:"Pase VIP",type:"vip",price:1200,emoji:"⭐",desc:"Experiencia premium con accesos exclusivos",features:["Acceso prioritario","Zona VIP","Guía personal","Comida incluida","Foto profesional"],stock:30,featured:true},
+  {id:4,name:"Pase Niño",type:"individual",price:185,emoji:"🧒",desc:"Para menores de 12 años",features:["Atracciones infantiles","Zona de juegos","Show en vivo incluido"],stock:200,featured:false},
+  {id:5,name:"Pase Adulto Mayor",type:"individual",price:250,emoji:"👴",desc:"Descuento especial para mayores de 60 años",features:["Acceso general","Áreas de descanso","Transporte interno"],stock:100,featured:false},
+  {id:6,name:"Pase Anual Individual",type:"anual",price:2000,emoji:"📅",desc:"Visitas ilimitadas durante todo el año",features:["Acceso ilimitado","Descuentos en tiendas","Bebida gratis por visita","Parqueadero incluido"],stock:50,featured:false},
+  {id:7,name:"Pase Anual Familiar",type:"anual",price:5000,emoji:"🏠",desc:"Toda la familia sin límites por 12 meses",features:["4 personas ilimitadas","Todos los beneficios","Descuento 20% en todo","Acceso VIP especial"],stock:25,featured:false},
+  {id:8,name:"Pase VIP Premium",type:"vip",price:2500,emoji:"💎",desc:"La experiencia más exclusiva del parque",features:["Acceso ultra VIP","Chef privado","Cabina reservada","Todas las atracciones sin fila","Recuerdo exclusivo"],stock:10,featured:false},
+];
+
+var cart = [];
+var users = [
+  {id:1,name:"Administrador",email:"admin@parque.com",pass:"admin123",role:"admin",orders:[]},
+  {id:2,name:"Juan García",email:"usuario@test.com",pass:"test123",role:"user",orders:[]},
+];
+var currentUser = null;
+var allOrders = [];
+var discountApplied = 0;
+var nextOrderId = 10000;
+
+// ============ STARS ============
+(function(){
+  var c=document.getElementById('heroStars');
+  if(!c)return;
+  for(var i=0;i<80;i++){
+    var s=document.createElement('div');
+    s.className='star';
+    var sz=Math.random()*3+1;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;animation-duration:'+(2+Math.random()*3)+'s;';
+    c.appendChild(s);
+  }
+})();
+
+// ============ NAVIGATION ============
+function showPage(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  var pg=document.getElementById('page-'+name);
+  if(pg){pg.classList.add('active');}
+  window.scrollTo(0,0);
+  if(name==='catalog') renderTickets('all');
+  if(name==='cart') renderCart();
+  if(name==='orders') renderOrders();
+  if(name==='admin') renderAdmin();
+  if(name==='payment') renderPaymentSummary();
+}
+function handleAuthNav(){
+  if(currentUser){
+    currentUser=null;
+    document.getElementById('authNavBtn').textContent='Iniciar Sesión';
+    document.getElementById('adminNavBtn').style.display='none';
+    document.getElementById('ordersNavBtn').style.display='none';
+    showToast('🚪','Sesión cerrada correctamente');
+    showPage('home');
+  } else { showPage('auth'); }
+}
+
+// ============ TICKETS CATALOG ============
+function renderTickets(filter){
+  var g=document.getElementById('ticketsGrid');
+  if(!g)return;
+  var list=filter==='all'?tickets:tickets.filter(function(t){return t.type===filter;});
+  g.innerHTML=list.map(function(t){
+    return '<div class="ticket-card'+(t.featured?' featured':'')+'">'+
+      (t.featured?'<div class="ticket-featured-badge">⭐ Popular</div>':'')+
+      '<div class="ticket-header">'+
+        '<div class="ticket-icon">'+t.emoji+'</div>'+
+        '<div class="ticket-name">'+t.name+'</div>'+
+        '<div class="ticket-type-label">'+t.type.toUpperCase()+'</div>'+
+      '</div>'+
+      '<div class="ticket-body">'+
+        '<div class="ticket-price">'+
+          '<span class="price-amount">$'+t.price.toLocaleString()+'</span>'+
+          '<span class="price-per"> / entrada</span>'+
+        '</div>'+
+        '<ul class="ticket-features">'+t.features.map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul>'+
+        '<button class="btn-add-cart" onclick="addToCart('+t.id+')">🛒 Agregar al carrito</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function filterTickets(filter,btn){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderTickets(filter);
+}
+function addToCart(ticketId){
+  var ticket=tickets.find(function(t){return t.id===ticketId;});
+  if(!ticket)return;
+  var existing=cart.find(function(c){return c.id===ticketId;});
+  if(existing){ existing.qty++; } else { cart.push({id:ticket.id,name:ticket.name,type:ticket.type,price:ticket.price,emoji:ticket.emoji,qty:1}); }
+  updateCartCount();
+  showToast('🎟️','¡'+ticket.name+' agregado al carrito!');
+}
+function updateCartCount(){
+  var total=cart.reduce(function(s,c){return s+c.qty;},0);
+  document.getElementById('cartCount').textContent=total;
+}
+
+// ============ CART ============
+function renderCart(){
+  var el=document.getElementById('cartContent');
+  if(!el)return;
+  if(cart.length===0){
+    el.innerHTML='<div class="cart-empty"><div class="empty-icon">🛒</div><p style="font-size:1.2rem;font-weight:800;margin-bottom:0.5rem;">Tu carrito está vacío</p><p style="font-size:0.9rem;">¡Agrega boletos para comenzar tu aventura!</p><button class="btn-checkout" style="max-width:300px;margin:1.5rem auto;display:block;" onclick="showPage(\'catalog\')">🎟️ Ver Boletos</button></div>';
+    return;
+  }
+  var subtotal=cart.reduce(function(s,c){return s+c.price*c.qty;},0);
+  var discount=discountApplied;
+  var total=Math.max(0,subtotal-discount);
+  el.innerHTML=
+    '<div class="cart-items-list">'+cart.map(function(item,i){
+      return '<div class="cart-item">'+
+        '<div class="cart-item-icon">'+item.emoji+'</div>'+
+        '<div class="cart-item-info"><div class="cart-item-name">'+item.name+'</div><div class="cart-item-type">'+item.type.toUpperCase()+'</div></div>'+
+        '<div class="cart-item-qty">'+
+          '<button class="qty-btn" onclick="changeQty('+i+',-1)">−</button>'+
+          '<span class="qty-num">'+item.qty+'</span>'+
+          '<button class="qty-btn" onclick="changeQty('+i+',1)">+</button>'+
+        '</div>'+
+        '<div class="cart-item-price">$'+(item.price*item.qty).toLocaleString()+'</div>'+
+        '<button class="cart-item-remove" onclick="removeFromCart('+i+')">🗑️</button>'+
+      '</div>';
+    }).join('')+'</div>'+
+    '<div class="cart-coupon"><h4>🎫 Código de descuento</h4><div class="coupon-input-group"><input type="text" id="couponInput" placeholder="Ingresa tu código (Ej: PARQUE30)"><button onclick="applyCoupon()">Aplicar</button></div><div class="coupon-msg" id="couponMsg"></div></div>'+
+    '<div class="cart-summary">'+
+      '<div class="summary-row"><span>Subtotal</span><span>$'+subtotal.toLocaleString()+'</span></div>'+
+      (discount>0?'<div class="summary-row" style="color:var(--success)"><span>Descuento</span><span>-$'+discount.toLocaleString()+'</span></div>':'')+
+      '<div class="summary-row total"><span>Total</span><span>$'+total.toLocaleString()+'</span></div>'+
+      '<button class="btn-checkout" onclick="goToCheckout()">✅ Proceder al pago</button>'+
+    '</div>';
+}
+function changeQty(i, delta){
+  cart[i].qty+=delta;
+  if(cart[i].qty<=0) cart.splice(i,1);
+  updateCartCount();
+  renderCart();
+}
+function removeFromCart(i){
+  cart.splice(i,1);
+  updateCartCount();
+  renderCart();
+}
+function applyCoupon(){
+  var code=document.getElementById('couponInput').value.trim().toUpperCase();
+  var msg=document.getElementById('couponMsg');
+  var subtotal=cart.reduce(function(s,c){return s+c.price*c.qty;},0);
+  var codes={PARQUE30:0.3,AVENTURA20:0.2,VERANO15:0.15,FAMILIA25:0.25};
+  if(codes[code]){
+    discountApplied=Math.round(subtotal*codes[code]);
+    msg.style.color='var(--success)';
+    msg.textContent='✅ Código válido. Descuento del '+(codes[code]*100)+'% aplicado.';
+    renderCart();
+  } else {
+    msg.style.color='var(--danger)';
+    msg.textContent='❌ Código inválido. Prueba: PARQUE30, AVENTURA20, FAMILIA25';
+  }
+}
+function goToCheckout(){
+  if(!currentUser){ showToast('🔐','Debes iniciar sesión para comprar'); showPage('auth'); return; }
+  if(cart.length===0){ showToast('⚠️','Tu carrito está vacío'); return; }
+  showPage('payment');
+}
+
+// ============ AUTH ============
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.auth-form').forEach(function(f){f.classList.remove('active');});
+  event.target.classList.add('active');
+  document.getElementById(tab==='login'?'loginForm':'registerForm').classList.add('active');
+}
+function doLogin(){
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  var user=users.find(function(u){return u.email===email && u.pass===pass;});
+  if(user){
+    currentUser=user;
+    document.getElementById('authNavBtn').textContent='Cerrar Sesión ('+user.name.split(' ')[0]+')';
+    document.getElementById('ordersNavBtn').style.display='';
+    if(user.role==='admin') document.getElementById('adminNavBtn').style.display='';
+    showToast('👋','¡Bienvenido, '+user.name+'!');
+    showPage('home');
+  } else { showToast('❌','Correo o contraseña incorrectos'); }
+}
+function doRegister(){
+  var name=document.getElementById('regName').value.trim();
+  var email=document.getElementById('regEmail').value.trim();
+  var pass=document.getElementById('regPass').value;
+  var pass2=document.getElementById('regPass2').value;
+  if(!name||!email||!pass){ showToast('⚠️','Completa todos los campos'); return; }
+  if(pass!==pass2){ showToast('❌','Las contraseñas no coinciden'); return; }
+  if(users.find(function(u){return u.email===email;})){ showToast('❌','Este correo ya está registrado'); return; }
+  var newUser={id:users.length+1,name:name,email:email,pass:pass,role:'user',orders:[]};
+  users.push(newUser);
+  currentUser=newUser;
+  document.getElementById('authNavBtn').textContent='Cerrar Sesión ('+name.split(' ')[0]+')';
+  document.getElementById('ordersNavBtn').style.display='';
+  showToast('🎉','¡Cuenta creada exitosamente!');
+  showPage('home');
+}
+
+// ============ PAYMENT ============
+function selectPayMethod(method){
+  document.querySelectorAll('.payment-method').forEach(function(m){m.classList.remove('selected');});
+  document.getElementById('pm-'+method).classList.add('selected');
+  document.getElementById('pm-'+method).querySelector('input').checked=true;
+  document.getElementById('cardFields').className='card-fields'+(method==='card'?' active':'');
+}
+function formatCard(input){
+  var v=input.value.replace(/\s/g,'').replace(/\D/g,'');
+  var f=''; for(var i=0;i<v.length&&i<16;i++){if(i>0&&i%4===0)f+=' ';f+=v[i];} input.value=f;
+}
+function renderPaymentSummary(){
+  var el=document.getElementById('paymentSummary');
+  if(!el)return;
+  var subtotal=cart.reduce(function(s,c){return s+c.price*c.qty;},0);
+  var total=Math.max(0,subtotal-discountApplied);
+  el.innerHTML=cart.map(function(item){
+    return '<li><span>'+item.emoji+' '+item.name+' ×'+item.qty+'</span><span>$'+(item.price*item.qty).toLocaleString()+'</span></li>';
+  }).join('')+(discountApplied>0?'<li style="color:var(--success)"><span>Descuento</span><span>-$'+discountApplied.toLocaleString()+'</span></li>':'');
+  document.getElementById('paymentTotal').textContent='$'+total.toLocaleString();
+}
+function processPayment(){
+  var selectedMethod=document.querySelector('.payment-method.selected label').textContent;
+  if(selectedMethod.includes('Tarjeta')){
+    var num=document.getElementById('cardNum').value.replace(/\s/g,'');
+    var exp=document.getElementById('cardExp').value;
+    var cvv=document.getElementById('cardCVV').value;
+    var name=document.getElementById('cardName').value;
+    if(!num||num.length<16||!exp||!cvv||!name){ showToast('⚠️','Completa los datos de tu tarjeta'); return; }
+  }
+  var subtotal=cart.reduce(function(s,c){return s+c.price*c.qty;},0);
+  var total=Math.max(0,subtotal-discountApplied);
+  var orderId=nextOrderId++;
+  var order={
+    id:'#'+orderId,
+    user:currentUser?currentUser.email:'Invitado',
+    userName:currentUser?currentUser.name:'Invitado',
+    items:JSON.parse(JSON.stringify(cart)),
+    subtotal:subtotal,
+    discount:discountApplied,
+    total:total,
+    method:selectedMethod.replace(/[💳🅿️🏦]/g,'').trim(),
+    status:'Completado',
+    date:new Date().toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'numeric'}),
+    time:new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})
+  };
+  allOrders.push(order);
+  if(currentUser) currentUser.orders.push(order);
+  renderConfirmation(order);
+  cart=[];
+  discountApplied=0;
+  updateCartCount();
+  showPage('confirmation');
+}
+function renderConfirmation(order){
+  var el=document.getElementById('confirmDetails');
+  if(!el)return;
+  el.innerHTML='<h4>Detalles de tu orden</h4>'+
+    order.items.map(function(item){
+      return '<div class="confirm-detail"><span>'+item.emoji+' '+item.name+' ×'+item.qty+'</span><span>$'+(item.price*item.qty).toLocaleString()+'</span></div>';
+    }).join('')+
+    (order.discount>0?'<div class="confirm-detail" style="color:var(--success)"><span>Descuento</span><span>-$'+order.discount.toLocaleString()+'</span></div>':'')+
+    '<div class="confirm-detail" style="font-size:1.1rem;font-weight:900;color:var(--primary);padding-top:0.5rem;"><span>Total pagado</span><span>$'+order.total.toLocaleString()+'</span></div>'+
+    '<div class="confirm-detail"><span>Número de orden</span><span>'+order.id+'</span></div>'+
+    '<div class="confirm-detail"><span>Fecha</span><span>'+order.date+' '+order.time+'</span></div>'+
+    '<div class="confirm-detail"><span>Método de pago</span><span>'+order.method+'</span></div>';
+}
+
+// ============ MY ORDERS ============
+function renderOrders(){
+  var el=document.getElementById('ordersList');
+  if(!el)return;
+  var myOrders=currentUser?currentUser.orders:[];
+  if(myOrders.length===0){
+    el.innerHTML='<div class="cart-empty"><div class="empty-icon">📋</div><p style="font-size:1.1rem;font-weight:800;">No tienes compras aún</p><button class="btn-checkout" style="max-width:300px;margin:1.5rem auto;display:block;" onclick="showPage(\'catalog\')">🎟️ Comprar boletos</button></div>';
+    return;
+  }
+  el.innerHTML=myOrders.map(function(o){
+    return '<div class="order-card">'+
+      '<div class="order-card-header">'+
+        '<span class="order-id">Orden '+o.id+'</span>'+
+        '<span class="order-status status-'+o.status.toLowerCase()+'">'+o.status+'</span>'+
+      '</div>'+
+      '<div class="order-items-list">'+o.items.map(function(i){return i.emoji+' '+i.name+' ×'+i.qty;}).join(' · ')+'</div>'+
+      '<div style="font-size:0.82rem;color:var(--text-muted);font-weight:600;margin-bottom:0.5rem;">'+o.date+' a las '+o.time+'</div>'+
+      '<div class="order-footer">'+
+        '<span class="order-total-amount">$'+o.total.toLocaleString()+'</span>'+
+        '<button class="btn-view-ticket" onclick="viewTicketModal(\''+o.id+'\')">🎟️ Ver boleto</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function viewTicketModal(orderId){
+  var allMyOrders=currentUser?currentUser.orders:[];
+  var order=allMyOrders.find(function(o){return o.id===orderId;});
+  if(!order)return;
+  document.getElementById('modalContent').innerHTML=
+    '<div style="text-align:center;background:linear-gradient(135deg,var(--dark),var(--dark2));color:#fff;border-radius:16px;padding:2rem;margin-bottom:1rem;">'+
+      '<div style="font-size:3rem;margin-bottom:0.5rem;">🎢</div>'+
+      '<div style="font-family:\'Fredoka One\',cursive;font-size:1.5rem;color:var(--secondary);">AdventuraMax</div>'+
+      '<div style="font-size:0.8rem;opacity:0.7;margin-top:0.25rem;">BOLETO OFICIAL</div>'+
+    '</div>'+
+    '<div style="background:#F9FAFB;border-radius:12px;padding:1rem;">'+
+      order.items.map(function(item){
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem;border-bottom:1px dashed #ddd;">'+
+          '<span style="font-weight:800;font-size:1rem;">'+item.emoji+' '+item.name+'</span>'+
+          '<span style="background:var(--primary);color:#fff;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.8rem;font-weight:800;">×'+item.qty+'</span>'+
+        '</div>';
+      }).join('')+
+      '<div style="padding:0.75rem;font-size:0.85rem;color:var(--text-muted);font-weight:600;">'+
+        'Orden: <b>'+order.id+'</b> | Fecha: <b>'+order.date+'</b><br>'+
+        'Total pagado: <b style="color:var(--primary);">$'+order.total.toLocaleString()+'</b>'+
+      '</div>'+
+    '</div>'+
+    '<div style="background:#FFF7F4;border:2px dashed var(--primary);border-radius:12px;padding:1rem;text-align:center;margin-top:1rem;">'+
+      '<div style="font-size:2rem;letter-spacing:0.15rem;font-family:monospace;font-weight:900;color:var(--dark);">████████████</div>'+
+      '<div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;">Código QR — Presenta en la entrada del parque</div>'+
+    '</div>';
+  document.getElementById('ticketModal').classList.add('open');
+}
+function closeModal(){ document.getElementById('ticketModal').classList.remove('open'); }
+
+// ============ ADMIN ============
+function renderAdmin(){
+  var totalRevenue=allOrders.reduce(function(s,o){return s+o.total;},0);
+  document.getElementById('adminStats').innerHTML=
+    '<div class="admin-stat"><div class="admin-stat-val">'+tickets.length+'</div><div class="admin-stat-label">Boletos activos</div></div>'+
+    '<div class="admin-stat"><div class="admin-stat-val">'+allOrders.length+'</div><div class="admin-stat-label">Órdenes totales</div></div>'+
+    '<div class="admin-stat"><div class="admin-stat-val">'+users.filter(function(u){return u.role==='user';}).length+'</div><div class="admin-stat-label">Usuarios</div></div>'+
+    '<div class="admin-stat"><div class="admin-stat-val">$'+totalRevenue.toLocaleString()+'</div><div class="admin-stat-label">Ingresos totales</div></div>';
+  renderAdminTickets();
+  renderAdminUsers();
+  renderAdminOrders();
+}
+function renderAdminTickets(){
+  var tb=document.getElementById('adminTicketsTbody');
+  if(!tb)return;
+  tb.innerHTML=tickets.map(function(t){
+    return '<tr>'+
+      '<td>#'+t.id+'</td>'+
+      '<td style="font-size:1.5rem">'+t.emoji+'</td>'+
+      '<td><b>'+t.name+'</b></td>'+
+      '<td><span style="background:#EDE9FE;color:#5B21B6;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.78rem;font-weight:800;">'+t.type+'</span></td>'+
+      '<td><b style="color:var(--primary)">$'+t.price.toLocaleString()+'</b></td>'+
+      '<td>'+t.stock+'</td>'+
+      '<td>'+
+        '<button class="admin-action-btn btn-edit" onclick="editTicketPrice('+t.id+')">✏️ Editar</button>'+
+        '<button class="admin-action-btn btn-delete" onclick="deleteTicket('+t.id+')">🗑️ Eliminar</button>'+
+      '</td>'+
+    '</tr>';
+  }).join('');
+}
+function renderAdminUsers(){
+  var tb=document.getElementById('adminUsersTbody');
+  if(!tb)return;
+  tb.innerHTML=users.map(function(u){
+    return '<tr>'+
+      '<td>#'+u.id+'</td>'+
+      '<td><b>'+u.name+'</b></td>'+
+      '<td>'+u.email+'</td>'+
+      '<td><span style="background:'+(u.role==='admin'?'#FEE2E2;color:#DC2626':'#D1FAE5;color:#065F46')+'";padding:0.2rem 0.6rem;border-radius:20px;font-size:0.78rem;font-weight:800;">'+u.role+'</span></td>'+
+      '<td>'+u.orders.length+'</td>'+
+      '<td><button class="admin-action-btn btn-edit" onclick="showToast(\'👤\',\'Función de edición de usuario\')">✏️ Editar</button></td>'+
+    '</tr>';
+  }).join('');
+}
+function renderAdminOrders(){
+  var tb=document.getElementById('adminOrdersTbody');
+  if(!tb)return;
+  if(allOrders.length===0){
+    tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">No hay órdenes aún.</td></tr>';
+    return;
+  }
+  tb.innerHTML=allOrders.map(function(o){
+    return '<tr>'+
+      '<td><b>'+o.id+'</b></td>'+
+      '<td>'+o.userName+'</td>'+
+      '<td>'+o.items.map(function(i){return i.emoji+i.name;}).join(', ')+'</td>'+
+      '<td><b style="color:var(--primary)">$'+o.total.toLocaleString()+'</b></td>'+
+      '<td>'+o.method+'</td>'+
+      '<td><span style="background:#D1FAE5;color:#065F46;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.78rem;font-weight:800;">'+o.status+'</span></td>'+
+    '</tr>';
+  }).join('');
+}
+function switchAdminTab(name){
+  document.querySelectorAll('.admin-tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.admin-section').forEach(function(s){s.classList.remove('active');});
+  event.target.classList.add('active');
+  document.getElementById('admin-'+name).classList.add('active');
+}
+function addTicket(){
+  var name=document.getElementById('newTicketName').value.trim();
+  var price=parseInt(document.getElementById('newTicketPrice').value)||0;
+  var type=document.getElementById('newTicketType').value;
+  var desc=document.getElementById('newTicketDesc').value.trim();
+  var emoji=document.getElementById('newTicketEmoji').value.trim()||'🎟️';
+  var stock=parseInt(document.getElementById('newTicketStock').value)||100;
+  if(!name||!price){ showToast('⚠️','Completa nombre y precio'); return; }
+  var newId=Math.max.apply(null,tickets.map(function(t){return t.id;}))+1;
+  tickets.push({id:newId,name:name,type:type,price:price,emoji:emoji,desc:desc,features:[desc],stock:stock,featured:false});
+  document.getElementById('newTicketName').value='';
+  document.getElementById('newTicketPrice').value='';
+  document.getElementById('newTicketDesc').value='';
+  document.getElementById('newTicketEmoji').value='';
+  document.getElementById('newTicketStock').value='';
+  renderAdmin();
+  showToast('✅','Boleto "'+name+'" agregado exitosamente');
+}
+function deleteTicket(id){
+  if(!confirm('¿Eliminar este boleto?'))return;
+  tickets=tickets.filter(function(t){return t.id!==id;});
+  renderAdmin();
+  showToast('🗑️','Boleto eliminado');
+}
+function editTicketPrice(id){
+  var ticket=tickets.find(function(t){return t.id===id;});
+  if(!ticket)return;
+  var newPrice=prompt('Nuevo precio para "'+ticket.name+'" (actual: $'+ticket.price+'):',ticket.price);
+  if(newPrice===null)return;
+  var p=parseInt(newPrice);
+  if(isNaN(p)||p<=0){ showToast('❌','Precio inválido'); return; }
+  ticket.price=p;
+  renderAdmin();
+  showToast('✅','Precio actualizado a $'+p.toLocaleString());
+}
+
+// ============ TOAST ============
+function showToast(icon,msg){
+  var t=document.getElementById('toast');
+  document.getElementById('toastIcon').textContent=icon;
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+
+// Cerrar modal al click fuera
+document.getElementById('ticketModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+</body>
+</html>
